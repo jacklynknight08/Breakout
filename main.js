@@ -5,35 +5,31 @@ console.log("Testing");
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
-// Creating an object/shape
-ctx.beginPath();
+// Define the position where the ball is drawn
+var x = canvas.width/2;
+var y = canvas.height-30;
 
-// First two values specify coordinates of the left and right corners of the rectangle
-// Last two values specify width and height of the rectangle 
-ctx.rect(20, 40, 50, 50);
+var dx = 2;
+var dy = -2;
 
-// FillStyle method is painting the square
-ctx.fillStyle = "#900C3F";
-ctx.fill();
-ctx.closePath();
+// Create a ball (circle)
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
 
-// Creating a ball (circle)
-ctx.beginPath();
+// Clear the canvas so a trail is not left behind
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
 
-// Arc method takes six parameters
-// First two values are the coordinates of the arc's center
-// Then the arc radius
-// Then the start and ending angles in radians
-// And last the direction of drawing where false is clockwise
-ctx.arc(240, 160, 20, 0, Math.PI*2, false);
-ctx.fillStyle = "#FF5733";
-ctx.fill();
-ctx.closePath();
+    // Adding a value to the x and y coordinates after every frame has been drawn to make the ball appear to move
+    x += dx;
+    y += dy;
+}
 
-// Creating a rectangle where we are only coloring the outer stroke
-// Inside is transparent
-ctx.beginPath();
-ctx.rect(160, 10, 100, 40);
-ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
-ctx.stroke();
-ctx.closePath();
+// Execute draw function within every 10 milliseconds
+setInterval(draw, 10);
