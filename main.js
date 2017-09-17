@@ -53,8 +53,19 @@ function draw() {
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
     }
-    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+
+    // If the ball collides with the bottom edge of the canvas, GAME OVER
+    // Create a collision detection for when the ball comes in contact with the paddle
+    if(y + dy < ballRadius) {
         dy = -dy;
+    } else if(y + dy > canvas.height-ballRadius) {
+        if(x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+        }
+        else {
+            alert("GAME OVER");
+            document.location.reload();
+        }
     }
 
     // If right cursor is pressed, move paddle 7 pixels to the right
@@ -98,4 +109,4 @@ function keyUpHandler(e) {
 }
 
 // Execute draw function within every 10 milliseconds
-setInterval(draw, 20);
+setInterval(draw, 10);
