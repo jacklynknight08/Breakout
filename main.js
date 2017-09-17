@@ -25,6 +25,30 @@ var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
 
+// Creating brick field
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+
+// Create offsets so the bricks will not be drawn on the edge of the canvas
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
+
+// Create a two-dimensional array
+// Brick columns (c) will contain brick rows (r)
+// The columns and rows contain an object that hold the x and y coordinates to paint each brick
+var bricks = [];
+
+for(var c=0; c<brickColumnCount; c++) {
+    bricks[c] = [];
+    
+    for(var r=0; r<brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0 };
+    }
+}
+
 // Create a ball (circle)
 function drawBall() {
     ctx.beginPath();
@@ -43,9 +67,33 @@ function drawPaddle() {
     ctx.closePath();
 }
 
+// Loop through all the bricks (columns and rows) in the array to set x and y positions for each brick
+// Draw the brick on the canvas for each loop iteration
+function drawBricks() {
+    
+    for(c=0; c<brickColumnCount; c++) {  
+        for(r=0; r<brickRowCount; r++) {
+            
+            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+            
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#DAF7A6";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
 // Clear the canvas so a trail is not left behind
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    drawBricks();
     drawBall();
     drawPaddle();
 
