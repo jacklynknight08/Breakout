@@ -50,6 +50,9 @@ for(var c = 0; c<brickColumnCount; c++) {
     }
 }
 
+// Create a score for user
+var score = 0;
+
 // Create a ball (circle)
 function drawBall() {
     ctx.beginPath();
@@ -98,6 +101,7 @@ function draw() {
     drawBricks();
     drawBall();
     drawPaddle();
+    drawScore();
     collisionDetection();
 
     // Subtracting the radius from one edge's width and adding it to the other gives proper collision detecting
@@ -175,11 +179,24 @@ function collisionDetection() {
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                     dy = -dy;
                     b.status = 0;
+                    // Add a score each time a brick is hit
+                    score++;
+                    if(score == brickRowCount*brickColumnCount) {
+                        alert("Winner Winner Chicken Dinner!");
+                        document.location.reload();
+                    }
                 }
             }
         }
     }
 }
 
-// Execute draw function within every 10 milliseconds
+// Create and update score display
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#FFC300";
+    ctx.fillText("Score: "+score, 8, 20);
+}
+
+// Execute draw function within every 15 milliseconds
 setInterval(draw, 15);
