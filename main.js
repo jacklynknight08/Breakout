@@ -41,11 +41,12 @@ var brickOffsetLeft = 30;
 // The columns and rows contain an object that hold the x and y coordinates to paint each brick
 var bricks = [];
 
-for(var c=0; c<brickColumnCount; c++) {
+for(var c = 0; c<brickColumnCount; c++) {
     bricks[c] = [];
     
-    for(var r=0; r<brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y: 0 };
+    // Draw a brick on the canvas if the status is equal to 1
+    for(var r = 0; r<brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
     }
 }
 
@@ -69,22 +70,23 @@ function drawPaddle() {
 
 // Loop through all the bricks (columns and rows) in the array to set x and y positions for each brick
 // Draw the brick on the canvas for each loop iteration
+// If status = 0, then the ball hit a brick and remove from canvas
 function drawBricks() {
-    
-    for(c=0; c<brickColumnCount; c++) {  
-        for(r=0; r<brickRowCount; r++) {
-            
-            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-            
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#DAF7A6";
-            ctx.fill();
-            ctx.closePath();
+    for(var c=0; c<brickColumnCount; c++) {
+        for(var r=0; r<brickRowCount; r++) {
+            if(bricks[c][r].status == 1) {
+                
+                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#DAF7A6";
+                ctx.fill();
+                ctx.closePath();
+            }
         }
     }
 }
@@ -96,6 +98,7 @@ function draw() {
     drawBricks();
     drawBall();
     drawPaddle();
+    collisionDetection();
 
     // Subtracting the radius from one edge's width and adding it to the other gives proper collision detecting
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
@@ -156,5 +159,27 @@ function keyUpHandler(e) {
     }
 }
 
+// If the center of the ball is inside the coordinates of one of the bricks, change the direction of the ball
+// For the ball to technically be inside of a brick, the following statements have to be = true
+// The x position of the ball is greater than the x position of the brick.
+// The x position of the ball is less than the x position of the brick plus its width.
+// The y position of the ball is greater than the y position of the brick.
+// The y position of the ball is less than the y position of the brick plus its height.
+function collisionDetection() {
+    for(var c = 0; c<brickColumnCount; c++) {
+        for(var r = 0; r<brickRowCount; r++) {
+            var b = bricks[c][r];
+
+            // Check to see if a collision happens, if it occurs, do not paint brick on canvas
+            if(b.status == 1) {
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
+    }
+}
+
 // Execute draw function within every 10 milliseconds
-setInterval(draw, 10);
+setInterval(draw, 15);
