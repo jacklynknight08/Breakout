@@ -139,6 +139,7 @@ function draw() {
 }
 
 // Listen for keypresses
+document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -160,6 +161,16 @@ function keyUpHandler(e) {
     }
     else if(e.keyCode == 37) {
         leftPressed = false;
+    }
+}
+
+// Relative x will be equal to the horizontal mouse position minus the distance from the left edge of the canvas and viewport
+// If greater than 0 and lower than the width, the pointer is within boundaries
+// Restrict movement of paddle to the canvas
+function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
     }
 }
 
